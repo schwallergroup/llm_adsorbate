@@ -5,6 +5,7 @@ import io
 import math
 import uuid
 from typing import Any
+import argparse
 
 import numpy as np
 import pandas as pd
@@ -102,21 +103,62 @@ registered_tools = [
     read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
 ]
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Run the CodeAct agent.")
+    parser.add_argument(
+        "--smiles",
+        type=str,
+        required=True,
+        help="The surrogated SMILES string of the ligand.",
+    )
+    parser.add_argument(
+        "--slab",
+        type=str,
+        required=True,
+        help="The path to the .xyz file of the hetero-catalyst slab.",
+    )
+    
+    parser.add_argument(    
+        "--prompt", 
+        type=str,
+        default="Please find a stable adsorption configuration for the ligand on the surface.",
+    )
+    
+    # parser.add_argument(
+    #     "--output",
+    #     type=str,
+    #     default
+    # )
+    return parser.parse_args()
+
+def _prepare_prompt(smiles: str, slab_path: str, user_request: str) -> str:
+    # Read the slab file content
+    with open(slab_path, 'r') as file:
+        slab_content = file.read()
+    
+    # Replace placeholders in the prompt template
+    prompt = prompt_codeact.replace("{{SMILES}}", smiles)
+    prompt = prompt.replace("{{SLAB_XYZ}}", slab_content)
+    prompt = prompt.replace("{{USER_REQUEST}}", user_request)
+    
+    return prompt
+    
 @weave.op()
 def main():
     """Main function to set up and run the agent."""
     # Checkpointer is disabled, so conversation state is not saved between runs.
-
+    args = parse_args()
+    prompt = _prepare_prompt(args.smiles, args.slab, args.prompt)
     # Create the CodeAct graph using the factory function
     code_graph = create_codeact(llm, registered_tools, eval_code)
 
     # Compile the graph into a runnable executor (without memory)
     agent_executor = code_graph.compile()
 
-    print(f"\n--- Running Agent with query: '{prompt_codeact}' ---\n")
+    # print(f"\n--- Running Agent with query: '{prompt}' ---\n")
     
     # The agent expects a list of messages as input
-    messages = [("user", prompt_codeact)]
+    messages = [("user", prompt)]
     
     # Stream the agent's response (no config needed for thread_id)
     for typ, chunk in agent_executor.stream(
