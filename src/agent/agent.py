@@ -102,23 +102,21 @@ registered_tools = [
     read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
 ]
 
+def get_agent_executor():
+    """Initializes and returns the compiled agent executor."""
+    code_graph = create_codeact(llm, registered_tools, eval_code)
+    agent_executor = code_graph.compile()
+    return agent_executor
+
 @weave.op()
 def main():
-    """Main function to set up and run the agent."""
-    # Checkpointer is disabled, so conversation state is not saved between runs.
+    """Main function to set up and run the agent in CLI mode."""
+    agent_executor = get_agent_executor()
 
-    # Create the CodeAct graph using the factory function
-    code_graph = create_codeact(llm, registered_tools, eval_code)
+    print(f"\n--- Running Agent with query: '{prompt_codeact}' ---\\n")
 
-    # Compile the graph into a runnable executor (without memory)
-    agent_executor = code_graph.compile()
-
-    print(f"\n--- Running Agent with query: '{prompt_codeact}' ---\n")
-    
-    # The agent expects a list of messages as input
     messages = [("user", prompt_codeact)]
-    
-    # Stream the agent's response (no config needed for thread_id)
+
     for typ, chunk in agent_executor.stream(
         {"messages": messages},
         stream_mode=["values", "messages"],
@@ -126,7 +124,7 @@ def main():
         if typ == "messages":
             print(chunk[0].content, end="")
         elif typ == "values":
-            print("\n\n---answer---\n\n", chunk)
+            print("\n\n---answer---\\n\n", chunk)
 
     print(f"\n\n--- Agent finished ---")
 
