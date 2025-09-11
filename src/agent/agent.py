@@ -100,7 +100,11 @@ llm = ChatOpenAI(
     )
 
 registered_tools = [
-    read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
+    # read_atoms_object, 
+    get_sites_from_atoms, 
+    get_fragment, 
+    get_ads_slab, 
+    relax_atoms
 ]
 
 def parse_args():

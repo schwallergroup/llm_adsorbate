@@ -73,12 +73,12 @@ def relax_atoms(atoms: ase.Atoms):
         relaxed_atoms: ase.Atoms, atoms of relaxed structure
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    mace_calculator = mace_mp(model="medium", device=device, dispersion=False)
+    mace_calculator = mace_mp(model="medium", device=str(device), dispersion=False)
 
     relaxed_atoms = atoms.copy()
     relaxed_atoms.calc = mace_calculator
     dyn = BFGS(relaxed_atoms, trajectory="relax.traj", logfile="relax.log")
-    dyn.run(fmax=0.5)
+    dyn.run(fmax=0.01)
 
     return relaxed_atoms
 
