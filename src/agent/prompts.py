@@ -8,4 +8,15 @@ Here are the only definitions you need:
 *   **"Center of the Slab" Definition:** The middle 50% of the slab's total area in the x and y dimensions.
 
 Now, figure out the best plan and execute it to achieve the goal.
+
+Your response should be in the following format:
+<aim>
+aim of this iteration
+</aim>
+<reflection>
+reflection on the previous iteration, if any
+</reflection>
+```python
+<write your code here>
+```
 """

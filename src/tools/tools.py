@@ -3,6 +3,11 @@ from ase.io import write
 from typing import Literal
 from autoadsorbate import Surface, Fragment
 from autoadsorbate.Surf import attach_fragment
+from ase.optimize import BFGS
+import torch
+from mace.calculators import mace_mp
+
+# mace calculator harcoded for the time being
 
 def read_atoms_object(path: str):
     """reads a atomistic structure file from the  system,
@@ -13,14 +18,14 @@ def read_atoms_object(path: str):
     """
     return ase.io.read(path)
 
-def get_sites_from_atoms(atoms: ase.Atoms, mode: Literal['slab', 'particle']):
+def get_sites_from_atoms(atoms: ase.Atoms): #, mode: Literal['slab', 'particle']):
     """
     Args:
         atoms: ase.Atoms object that can be an "slab" or 'particle'. Determines all surface sites. 
     Returns:
         pandas.DataFrame containing all site information.
     """
-    return Surface(atoms, mode=mode).site_df
+    return Surface(atoms).site_df
 
 def get_fragment(SMILES: str):
     """
@@ -31,7 +36,7 @@ def get_fragment(SMILES: str):
     """
     return Fragment(SMILES).get_conformer(0)
 
-def get_ads_slab(slab_atoms, fragment_atoms, site_dict):
+def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: dict):
     """
     Args:
         slab_atoms: ase.Atoms, atoms of slab that should host the fragment
@@ -51,3 +56,22 @@ def get_ads_slab(slab_atoms, fragment_atoms, site_dict):
     )
 
     return ads_slab_atoms
+
+def relax_atoms(atoms: ase.Atoms):
+    """
+    Args:
+        atoms: ase.Atoms, atoms that need to be relaxed
+        
+    returns:
+        relaxed_atoms: ase.Atoms, atoms of relaxed structure
+    """
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    mace_calculator = mace_mp(model="medium", device=device, dispersion=False)
+
+    relaxed_atoms = atoms.copy()
+    relaxed_atoms.calc = mace_calculator
+    dyn = BFGS(relaxed_atoms, trajectory="relax.traj", logfile="relax.log")
+    dyn.run(fmax=0.5)
+
+    return relaxed_atoms
+
