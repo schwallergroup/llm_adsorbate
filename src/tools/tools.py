@@ -1,5 +1,8 @@
 import ase
+from ase.io import write
 from typing import Literal
+from autoadsorbate import Surface, Fragment
+from autoadsorbate.Surf import attach_fragment
 
 def read_atoms_object(path: str):
     """reads a atomistic structure file from the  system,
