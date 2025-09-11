@@ -45,12 +45,14 @@ def get_fragment(SMILES: str, to_initialize=1, conformer_i=0):
     """
     return Fragment(SMILES, to_initialize=to_initialize).get_conformer(conformer_i)
 
-def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: dict):
+def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: dict, height: float = 1.5, n_rotation: float = 0.):
     """
     Args:
         slab_atoms: ase.Atoms, atoms of slab that should host the fragment
         fragment_atoms: ase.Atoms, molecular fragment obtained from SMILES
         site_dict: dict, information about the selected site geometry
+        n_rotation: float, rotation around the site vector provided in site_dict['n_vector']. This can be used to rotate the fragment conformer, to avoid atoms being too close to each other.
+        height: float, distance from site in angstroms
     returns:
         ase.Atoms of molecule placed on slab
     """
@@ -59,9 +61,8 @@ def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: di
         atoms = slab_atoms,
         site_dict = site_dict,
         fragment = fragment_atoms,
-        n_rotation = 0.,
-        height=1.5
-        
+        n_rotation = n_rotation,
+        height = height   
     )
 
     return ads_slab_atoms
