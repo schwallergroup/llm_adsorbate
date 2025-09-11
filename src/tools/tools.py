@@ -5,6 +5,9 @@ from autoadsorbate.Surf import attach_fragment
 from ase.optimize import BFGS
 import torch
 from mace.calculators import mace_mp
+from ase.md.langevin import Langevin
+from ase import units
+import os
 
 # mace calculator harcoded for the time being
 
@@ -67,11 +70,11 @@ def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: di
 
     return ads_slab_atoms
 
-def relax_atoms(atoms: ase.Atoms):
+def relax_atoms(atoms: ase.Atoms, output_dir='./'):
     """
     Args:
         atoms: ase.Atoms, atoms that need to be relaxed
-        
+        output_dir: str, where to write relax trajectory file
     returns:
         relaxed_atoms: ase.Atoms, atoms of relaxed structure
     """
@@ -80,8 +83,47 @@ def relax_atoms(atoms: ase.Atoms):
 
     relaxed_atoms = atoms.copy()
     relaxed_atoms.calc = mace_calculator
-    dyn = BFGS(relaxed_atoms, trajectory="relax.traj", logfile="relax.log")
+    dyn = BFGS(relaxed_atoms, trajectory=os.path.join(output_dir, "relax.traj"), logfile="relax.log")
     dyn.run(fmax=0.01)
 
     return relaxed_atoms
 
+def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300):
+    """
+    Args:
+        atoms: ase.Atoms, atoms that need to run MD
+        steps: int, number of inonic steps in MD
+        temperature_K: float, Temperature in K
+        
+    returns:
+        MD_traj: list of ase.Atoms, frames of MD simulation.
+    """
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    mace_calculator = mace_mp(model="medium", device=str(device), dispersion=False)
+
+    relaxed_atoms = atoms.copy()
+    relaxed_atoms.calc = mace_calculator
+    
+    dyn = Langevin(
+        atoms,
+        timestep=1.0 * units.fs,         
+        temperature_K = temperature_K,   
+        friction = 0.002,                
+    )
+
+    def print_status(a=atoms):
+        epot = a.get_potential_energy() / len(a)
+        ekin = a.get_kinetic_energy() / len(a)
+        print(f"Epot = {epot:.3f} eV, Ekin = {ekin:.3f} eV, Etot = {epot+ekin:.3f} eV")
+
+    dyn.attach(print_status, interval=5)
+
+    MD_traj = []
+    def save_frame():
+        MD_traj.append(atoms.copy())
+
+    dyn.attach(save_frame, interval=1)
+
+    dyn.run(steps)
+
+    return MD_traj
