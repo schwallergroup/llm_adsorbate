@@ -1,4 +1,50 @@
-"""
-you can change the name of this file if you want.
-you can add other files if you want.
-"""
+import ase
+from typing import Literal
+
+def read_atoms_object(path: str):
+    """reads a atomistic structure file from the  system,
+    Args:
+        path: string - location on system
+    returns:
+        ase.Atoms object
+    """
+    return ase.io.read(path)
+
+def get_sites_from_atoms(atoms: ase.Atoms, mode: Literal['slab', 'particle']):
+    """
+    Args:
+        atoms: ase.Atoms object that can be an "slab" or 'particle'. Determines all surface sites. 
+    Returns:
+        pandas.DataFrame containing all site information.
+    """
+    return Surface(atoms, mode=mode).site_df
+
+def get_fragment(SMILES: str):
+    """
+    Args:
+        SMILES: string of smiles that should be placed on surface sites.
+    returns:
+        ase.Atoms of molecule or molecular fragment, alligned relative to the site in [0,0,0]
+    """
+    return Fragment(SMILES).get_conformer(0)
+
+def get_ads_slab(slab_atoms, fragment_atoms, site_dict):
+    """
+    Args:
+        slab_atoms: ase.Atoms, atoms of slab that should host the fragment
+        fragment_atoms: ase.Atoms, molecular fragment obtained from SMILES
+        site_dict: dict, information about the selected site geometry
+    returns:
+        ase.Atoms of molecule placed on slab
+    """
+
+    ads_slab_atoms = attach_fragment(
+        atoms = slab_atoms,
+        site_dict = site_dict,
+        fragment = fragment_atoms,
+        n_rotation = 0.,
+        height=1.5
+        
+    )
+
+    return ads_slab_atoms
