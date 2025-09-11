@@ -23,6 +23,14 @@ def get_sites_from_atoms(atoms: ase.Atoms):
         atoms: ase.Atoms object. Determines all surface sites. 
     Returns:
         pandas.DataFrame containing all site information.
+        the columns of the returned dataframe are ['coordinates', 'connectivity', 'topology', 'n_vector', 'h_vector', 'site_formula'],
+        - each index describes one site
+        - 'coordinates': each entry is a list of 3 floats that locate the adsorption site in cartesian coordinates in angstrom;
+        - 'connectivity': number of adjecent atoms, 1 - top site; 2 - bridge site; 3 - hollow site/3 fold site; etc.;
+        - 'topology': list of ase.Atom.index from atoms that is directly adjecent to adsorption site;
+        - 'n_vector': Unit vector pointing in the direction in with anutthyng attached to the site needs to be oriented;
+        - 'h_vector': Unit vector describing the rotation around n_vector;
+        - 'site_formula': dictionary indicating the composition of the site.
     """
     return Surface(atoms).site_df
 
