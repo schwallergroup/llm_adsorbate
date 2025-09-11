@@ -34,14 +34,16 @@ def get_sites_from_atoms(atoms: ase.Atoms):
     """
     return Surface(atoms).site_df
 
-def get_fragment(SMILES: str):
+def get_fragment(SMILES: str, to_initialize=1, conformer_i=0):
     """
     Args:
         SMILES: string of smiles that should be placed on surface sites.
+        to_initialize: int = 1, if a SMILES is deamed to be conformationally complex. This number should be increased to deal with the increased complexity; in this case multiple fragment conformation should be tried.
+        conformer_i: int, index of initialized conformer to be returned
     returns:
         ase.Atoms of molecule or molecular fragment, alligned relative to the site in [0,0,0]
     """
-    return Fragment(SMILES).get_conformer(0)
+    return Fragment(SMILES, to_initialize=to_initialize).get_conformer(conformer_i)
 
 def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: dict):
     """
