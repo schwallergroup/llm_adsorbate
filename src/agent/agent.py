@@ -10,6 +10,8 @@ import numpy as np
 import pandas as pd
 import scipy
 import sklearn
+import ase
+import autoadsorbate
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph_codeact import create_codeact
@@ -36,6 +38,8 @@ exec_globals.update({
     "scipy": scipy,
     "sklearn": sklearn,
     "math": math,
+    "ase": ase,
+    "autoadsorbate": autoadsorbate,
 })
 
 
