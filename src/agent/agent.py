@@ -10,14 +10,21 @@ import numpy as np
 import pandas as pd
 import scipy
 import sklearn
+import ase
+import autoadsorbate
+import torch
+import mace
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph_codeact import create_codeact
-from langgraph.checkpoint.sqlite import SqliteSaver
+
+import weave
+weave.init("llm-hackathon")
 
 # Import the tools we defined
-from .tools import registered_tools
+
 from .prompts import prompt_codeact
+from ..tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
 
 # Load environment variables from .env file
 load_dotenv()
@@ -35,6 +42,10 @@ exec_globals.update({
     "scipy": scipy,
     "sklearn": sklearn,
     "math": math,
+    "ase": ase,
+    "autoadsorbate": autoadsorbate,
+    "torch": torch,
+    "mace": mace,
 })
 
 
@@ -87,6 +98,11 @@ llm = ChatOpenAI(
         request_timeout=120,
     )
 
+registered_tools = [
+    read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
+]
+
+@weave.op()
 def main():
     """Main function to set up and run the agent."""
     # Checkpointer is disabled, so conversation state is not saved between runs.
