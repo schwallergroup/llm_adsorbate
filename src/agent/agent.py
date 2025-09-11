@@ -20,7 +20,9 @@ import weave
 weave.init("llm-hackathon")
 
 # Import the tools we defined
+
 from .prompts import prompt_codeact
+from ..tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab
 
 # Load environment variables from .env file
 load_dotenv()
@@ -92,7 +94,9 @@ llm = ChatOpenAI(
         request_timeout=120,
     )
 
-registered_tools = []
+registered_tools = [
+    read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab 
+]
 
 @weave.op()
 def main():
