@@ -1,6 +1,5 @@
 import ase
 from ase.io import write
-from typing import Literal
 from autoadsorbate import Surface, Fragment
 from autoadsorbate.Surf import attach_fragment
 from ase.optimize import BFGS
@@ -18,10 +17,10 @@ def read_atoms_object(path: str):
     """
     return ase.io.read(path)
 
-def get_sites_from_atoms(atoms: ase.Atoms): #, mode: Literal['slab', 'particle']):
+def get_sites_from_atoms(atoms: ase.Atoms): 
     """
     Args:
-        atoms: ase.Atoms object that can be an "slab" or 'particle'. Determines all surface sites. 
+        atoms: ase.Atoms object. Determines all surface sites. 
     Returns:
         pandas.DataFrame containing all site information.
     """
