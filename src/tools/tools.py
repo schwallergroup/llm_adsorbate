@@ -24,7 +24,7 @@ def get_sites_from_atoms(atoms: ase.Atoms):
     Returns:
         pandas.DataFrame containing all site information.
     """
-    return Surface(atoms, mode=mode).site_df
+    return Surface(atoms).site_df
 
 def get_fragment(SMILES: str):
     """
