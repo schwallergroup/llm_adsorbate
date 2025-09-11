@@ -17,6 +17,10 @@ dependencies = [
     "scikit-learn>=1.7.2",
     "scipy>=1.15.3",
     "weave>=0.52.6",
+<<<<<<< HEAD
     "torch==2.2.1",
     "mace>=1.1.2",
+=======
+    "mace-torch>=0.3.14",
+>>>>>>> a6f33a3911ee1a9239d1b524bd3ce4cf3d7201a5
 ]
