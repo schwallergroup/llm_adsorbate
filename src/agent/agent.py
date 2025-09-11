@@ -13,10 +13,11 @@ import sklearn
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph_codeact import create_codeact
-from langgraph.checkpoint.sqlite import SqliteSaver
+
+import weave
+weave.init("llm-hackathon")
 
 # Import the tools we defined
-from .tools import registered_tools
 from .prompts import prompt_codeact
 
 # Load environment variables from .env file
@@ -87,6 +88,9 @@ llm = ChatOpenAI(
         request_timeout=120,
     )
 
+registered_tools = []
+
+@weave.op()
 def main():
     """Main function to set up and run the agent."""
     # Checkpointer is disabled, so conversation state is not saved between runs.
