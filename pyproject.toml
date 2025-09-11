@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "ase>=3.26.0",
+    "dotenv>=0.9.9",
     "llm-openrouter>=0.4.1",
+    "requests>=2.32.5",
     "weave>=0.52.6",
 ]
