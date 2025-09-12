@@ -1,18 +1,16 @@
 import sys
 import os
 import re
+import tempfile
 
-# 現在のファイルのディレクトリ (src/app/)
+# プロジェクトルートをパスに追加
 current_dir = os.path.dirname(os.path.abspath(__file__))
-# プロジェクトのルートディレクトリ (src/app/ の2つ上のディレクトリ)
 project_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
-
-# プロジェクトのルートディレクトリをsys.pathに追加
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 import streamlit as st
-from src.agent.agent import get_agent_executor
+from src.agent.agent import get_agent_executor, _prepare_prompt
 
 st.set_page_config(page_title="LLM Agent Demo", layout="wide")
 st.title("Brosda")
@@ -24,7 +22,7 @@ def initialize_agent_executor():
 
 agent_executor = initialize_agent_executor()
 
-# --- 便利な関数 ---
+# --- 表示用ヘルパー関数 ---
 def render_message(content):
     """メッセージをテキストとコードに分割して表示する"""
     parts = re.split(r"(```python\n.*\n```)", content, flags=re.DOTALL)
@@ -52,33 +50,51 @@ st.sidebar.header("Settings")
 openrouter_api_key = st.sidebar.text_input("OpenRouter API Key", type="password", key="openrouter_api_key")
 if openrouter_api_key:
     os.environ["OPENROUTER_API_KEY"] = openrouter_api_key
-else:
-    st.sidebar.warning("Please enter your OpenRouter API Key.")
 
-# --- 会話履歴の初期化 ---
+# --- 新しい入力UI ---
+st.sidebar.header("Inputs")
+smiles_input = st.sidebar.text_input("SMILES String")
+xyz_file = st.sidebar.file_uploader("Slab XYZ file", type=['xyz'])
+user_query = st.sidebar.text_area("User Query", value="Please find a stable adsorption configuration for the adsorbate on the surface.")
+
+run_button = st.sidebar.button("Run Agent")
+
+# --- 会話履歴の初期化と表示 ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 既存の会話履歴を表示 ---
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        if message["role"] == "user":
-            st.markdown(message["content"])
-        else:
-            render_message(message["content"])
+        render_message(message["content"])
 
-# --- ユーザー入力 ---
-if not openrouter_api_key:
-    st.chat_input("OpenRouter API Keyを入力してください", disabled=True)
-else:
-    if prompt := st.chat_input("Enter your query for the agent:"):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+# --- エージェント実行ロジック ---
+if run_button:
+    # 入力チェック
+    if not openrouter_api_key:
+        st.sidebar.error("Please enter your OpenRouter API Key.")
+    elif not smiles_input:
+        st.sidebar.error("Please enter a SMILES string.")
+    elif not xyz_file:
+        st.sidebar.error("Please upload a slab XYZ file.")
+    else:
+        # XYZファイルを一時ファイルに保存
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".xyz", mode='w') as tmp_file:
+            xyz_content = xyz_file.getvalue().decode('utf-8')
+            tmp_file.write(xyz_content)
+            tmp_file_path = tmp_file.name
+        
+        # プロンプトを準備
+        try:
+            prompt = _prepare_prompt(smiles=smiles_input, slab_path=tmp_file_path, user_request=user_query)
+            
+            # 生成されたプロンプトをユーザーメッセージとして表示
+            st.session_state.messages.append({"role": "user", "content": f"**Inputs provided:**\n- SMILES: `{smiles_input}`\n- Slab file: `{xyz_file.name}`\n- Query: `{user_query}`\n\n**Generated prompt for the agent...**"})
+            with st.chat_message("user"):
+                st.markdown(f"**Inputs provided:**\n- SMILES: `{smiles_input}`\n- Slab file: `{xyz_file.name}`\n- Query: `{user_query}`")
 
-        with st.chat_message("assistant"):
-            final_answer = ""
-            try:
+            # エージェントを実行
+            with st.chat_message("assistant"):
+                final_answer = ""
                 with st.status("Thinking...", expanded=True) as status:
                     for event in agent_executor.stream(
                         {"messages": [("user", prompt)]},
@@ -107,12 +123,16 @@ else:
                     st.session_state.messages.append({"role": "assistant", "content": final_answer})
                 else:
                     st.warning("The agent did not produce a final answer.")
+            
+            # 一時ファイルを削除
+            os.remove(tmp_file_path)
 
-            except Exception as e:
-                st.error(f"An error occurred during agent execution: {e}")
-                st.exception(e)
-                error_message = f"Error: {e}"
-                st.session_state.messages.append({"role": "assistant", "content": error_message})
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+            st.exception(e)
+            # エラー発生時も一時ファイルを削除
+            if 'tmp_file_path' in locals() and os.path.exists(tmp_file_path):
+                os.remove(tmp_file_path)
 
 st.sidebar.markdown("---")
-st.sidebar.info("This demo uses an LLM agent to perform computational chemistry tasks.")
+st.sidebar.info("Provide SMILES, a slab file, and a query, then click 'Run Agent'.")
