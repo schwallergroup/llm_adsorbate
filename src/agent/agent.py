@@ -12,8 +12,8 @@ import scipy
 import sklearn
 import ase
 import autoadsorbate
-# import torch
-# import mace
+import torch
+import mace
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph_codeact import create_codeact
@@ -24,7 +24,7 @@ weave.init("llm-hackathon")
 # Import the tools we defined
 
 from src.agent.prompts import prompt_codeact
-from src.tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab
+from src.tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
 
 # Load environment variables from .env file
 load_dotenv()
@@ -44,8 +44,8 @@ exec_globals.update({
     "math": math,
     "ase": ase,
     "autoadsorbate": autoadsorbate,
-    #    "torch": torch,
-#    "mace": mace,
+    "torch": torch,
+    "mace": mace,
 })
 
 
@@ -99,7 +99,7 @@ llm = ChatOpenAI(
     )
 
 registered_tools = [
-    read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab
+    read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
 ]
 
 def get_agent_executor():
