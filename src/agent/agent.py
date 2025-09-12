@@ -97,7 +97,7 @@ llm = ChatOpenAI(
         streaming=False,
         max_completion_tokens=20000,
         request_timeout=300,
-        seed=420
+        seed=42
     )
 
 registered_tools = [
