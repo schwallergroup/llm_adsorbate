@@ -136,4 +136,4 @@ def save_ase_atoms(atoms: ase.Atoms, filename):
         atoms: ase.Atoms tobject to be written
         filename: string of where to write ase atoms. must end in '.xyz'
     """
-    write(atoms, filename)
+    write(filename, atoms)

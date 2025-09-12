@@ -44,7 +44,7 @@ Using the retrieved site_dict, call the tool `get_ads_slab` to place the ligand 
 
 TASK 4:
 
-Relax the adsorption structure using the tool `relax_atoms`. Save the relaxed structure to a .xyz file at "outputs/relaxed_ads_slab.xyz".
+Relax the adsorption structure using the tool `relax_atoms`. Save the relaxed structure to a .xyz file at "outputs/relaxed_ads_slab.xyz" using tool `save_ase_atoms`.
 
 TASK 5:
 

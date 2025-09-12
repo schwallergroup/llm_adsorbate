@@ -25,7 +25,7 @@ weave.init("liac/llm-hackathon")
 # Import the tools we defined
 
 from .prompts import prompt_codeact
-from ..tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms, md_run_atoms
+from ..tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms, md_run_atoms, save_ase_atoms
 
 # Load environment variables from .env file
 load_dotenv()
@@ -102,6 +102,7 @@ llm = ChatOpenAI(
 
 registered_tools = [
     read_atoms_object, 
+    save_ase_atoms,
     get_sites_from_atoms, 
     get_fragment, 
     get_ads_slab, 
