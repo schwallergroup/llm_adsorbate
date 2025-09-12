@@ -1,5 +1,5 @@
 conda activate llm_adsorbate
 python -m src.agent.agent \
   --smiles 'ClC(=O)[O-]' \
-  --slab 'notebooks/NiFeO_slab.xyz' \
-  --prompt 'Does the molecule stay covalently bound to a central bridge site containing Fe and Ni on the surface?'
+  --slab "./notebooks/cu_slab_211.xyz" \
+  --prompt "does this fragment stay covalently bound through the carbon to a top site in the middle of the surface?"
