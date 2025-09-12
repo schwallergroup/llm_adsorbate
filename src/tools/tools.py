@@ -1,13 +1,15 @@
 import ase
-from ase.io import write
+from ase.io import read, write
 from autoadsorbate import Surface, Fragment
 from autoadsorbate.Surf import attach_fragment
 from ase.optimize import BFGS
+from ase.io.trajectory import Trajectory
 import torch
 from mace.calculators import mace_mp
 from ase.md.langevin import Langevin
 from ase import units
 import os
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 
 # mace calculator harcoded for the time being
 
@@ -88,9 +90,9 @@ def relax_atoms(atoms: ase.Atoms, output_dir='./'):
 
     return relaxed_atoms
 
-def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300):
+def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300, output_dir='./'):
     """
-    xxx
+    THis function runs molecular dynamics at selected temperature for selected number of steps and returns list of frames as ase atoms.
     Args:
         atoms: ase.Atoms, atoms that need to run MD
         steps: int, number of inonic steps in MD
@@ -102,8 +104,10 @@ def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     mace_calculator = mace_mp(model="medium", device=str(device), dispersion=False)
 
-    relaxed_atoms = atoms.copy()
-    relaxed_atoms.calc = mace_calculator
+    
+    atoms.calc = mace_calculator
+
+    MaxwellBoltzmannDistribution(atoms, temperature_K=300)
     
     dyn = Langevin(
         atoms,
@@ -112,19 +116,12 @@ def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300)
         friction = 0.002,                
     )
 
-    def print_status(a=atoms):
-        epot = a.get_potential_energy() / len(a)
-        ekin = a.get_kinetic_energy() / len(a)
-        print(f"Epot = {epot:.3f} eV, Ekin = {ekin:.3f} eV, Etot = {epot+ekin:.3f} eV")
-
-    dyn.attach(print_status, interval=5)
-
-    MD_traj = []
-    def save_frame():
-        MD_traj.append(atoms.copy())
-
-    dyn.attach(save_frame, interval=1)
+    traj = Trajectory('md.traj', 'w', atoms)
+    dyn.attach(traj.write, interval=1)
 
     dyn.run(steps)
+
+    MD_traj = read(os.path.join(output_dir, "md.traj"), index=':')
+    write(os.path.join(output_dir, "md_traj.xyz"), MD_traj)
 
     return MD_traj
