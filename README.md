@@ -1,8 +1,4 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/repo_logo_dark.png" width='100%'>
-  <source media="(prefers-color-scheme: light)" srcset="./assets/repo_logo_light.png" width='100%'>
-  <img alt="Project logo" src="./assets/logo.png" width="100%">
-</picture>
+<img alt="Project logo" src="./assets/logo.png" width="20%">
 
 <br>
 
