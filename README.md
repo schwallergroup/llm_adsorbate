@@ -19,10 +19,10 @@
 LLM hackathon - An LLM agent system for the autonomous exploration of stable absorbate structures on catalytic surfaces.
 
 ## 👩‍💻 Installation
-The most recent code and data can be installed directly from GitHub with:
-
 ```bash
-$ pip install git+https://github.com/schwallergroup/llm_adsorbate.git
+$ git clone https://github.com/schwallergroup/llm_adsorbate.git
+$ cd llm_adsorbate
+$ uv pip install -e .
 ```
 
 ## 🔥 Usage
