@@ -12,7 +12,7 @@ import os
 # mace calculator harcoded for the time being
 
 def read_atoms_object(path: str):
-    """reads a atomistic structure file from the  system,
+    """reads a atomistic structure file from the system,
     Args:
         path: string - location on system
     returns:
@@ -90,6 +90,7 @@ def relax_atoms(atoms: ase.Atoms, output_dir='./'):
 
 def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300):
     """
+    xxx
     Args:
         atoms: ase.Atoms, atoms that need to run MD
         steps: int, number of inonic steps in MD

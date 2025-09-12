@@ -25,7 +25,7 @@ weave.init("llm-hackathon")
 # Import the tools we defined
 
 from .prompts import prompt_codeact
-from ..tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms
+from ..tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms, md_run_atoms
 
 # Load environment variables from .env file
 load_dotenv()
@@ -104,7 +104,8 @@ registered_tools = [
     get_sites_from_atoms, 
     get_fragment, 
     get_ads_slab, 
-    relax_atoms
+    relax_atoms,
+    md_run_atoms
 ]
 
 def parse_args():
