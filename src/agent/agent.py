@@ -96,8 +96,8 @@ llm = ChatOpenAI(
         model="google/gemini-2.5-pro",
         streaming=False,
         max_completion_tokens=20000,
-        request_timeout=120,
-        seed=42
+        request_timeout=300,
+        seed=420
     )
 
 registered_tools = [

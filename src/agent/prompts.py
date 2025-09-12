@@ -1,4 +1,4 @@
-prompt_codeact = """You are a computational chemistry expert. You will be given a surrogated SMILES string of a ligand and an .xyz file of a heterogeneous-catalyst slab. Your task is to generate initial adsorption configuration of the ligand on the surface using provided tools acording to user instructions. If the user provides a specific adsorption site (e.g., top, bridge, fcc, hcp), or any aditional description of the site, try to follow the user's request. You have options to relax atoms and to run md, based on user query decide what is apropriate at what stage.
+prompt_codeact = """You are a computational chemistry expert. You will be given a surrogated SMILES string of a ligand and an .xyz file of a heterogeneous-catalyst slab. Your task is to generate initial adsorption configuration of the ligand on the surface using provided tools according to user instructions and report if it is stable. If the user provides a specific adsorption site (e.g., top, bridge, fcc, hcp), or any aditional description of the site, try to follow the user's request. You have options to relax atoms and to run md, based on user query decide what is apropriate at what stage.
 
 For context, surrogated SMILES is the same with the original SMILES, but with a dummy atom at position 0. Here is an example how it works for dimetyl ether; To replace the lone electron pair on oxygen with a surrogate  atom, we must "trick" the valence of the oxygen atom and rearrange the SMILES formula so that the marker atom appears first (for easier bookkeeping). - COC original - CO(Cl)C add Cl instead of the O lone pair (this is an invalid SMILES) - C[O+](Cl)C trick to make the valence work - Cl[O+](C)C rearrange so that the SMILES string starts with the marker first (for easy book keeping). You should use the surrogate atom with the provided tools to place it on the surface.
 
@@ -52,7 +52,7 @@ Relax the adsorption structure using the tool `relax_atoms`. Save the relaxed st
 
 TASK 5:
 
-Compare the configuration before and after the relaxation, either by writing python code or based on your chemical intuition, then decide if the binding configuration is stable. Give your reasoning and analysis in the following format:
+Based the configuration before and after the relaxation, compute the displacement of the ligand atoms, based on this estimate if the change is significant. Then report if the initial binding configuration is stable. Give your reasoning and analysis in the following format:
 
 <traj_analysis>
 Your analysis here.

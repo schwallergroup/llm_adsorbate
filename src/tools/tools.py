@@ -57,7 +57,7 @@ def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: di
         slab_atoms: ase.Atoms, atoms of slab that should host the fragment
         fragment_atoms: ase.Atoms, molecular fragment obtained from SMILES
         site_dict: dict, information about the selected site geometry
-        n_rotation: float, rotation around the site vector provided in site_dict['n_vector']. This can be used to rotate the fragment conformer, to avoid atoms being too close to each other.
+        n_rotation: float, rotation in degree around the site vector provided in site_dict['n_vector']. This can be used to rotate the fragment conformer, to avoid atoms being too close to each other.
         height: float, distance from site in angstroms
     returns:
         ase.Atoms of molecule placed on slab
@@ -120,7 +120,7 @@ def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300,
         friction = 0.002,                
     )
 
-    traj = Trajectory('md.traj', 'w', atoms)
+    traj = Trajectory(os.path.join(output_dir, "md.traj"), 'w', atoms)
     dyn.attach(traj.write, interval=1)
 
     dyn.run(steps)
