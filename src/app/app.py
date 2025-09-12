@@ -15,7 +15,7 @@ import streamlit as st
 from src.agent.agent import get_agent_executor
 
 st.set_page_config(page_title="LLM Agent Demo", layout="wide")
-st.title("LLM Agent Demo: Computational Chemistry Assistant")
+st.title("Brosda")
 
 # --- エージェントの初期化 ---
 @st.cache_resource
