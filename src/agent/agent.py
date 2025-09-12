@@ -20,7 +20,7 @@ from langchain_openai import ChatOpenAI
 from langgraph_codeact import create_codeact
 
 import weave
-weave.init("llm-hackathon")
+weave.init("liac/llm-hackathon")
 
 # Import the tools we defined
 
@@ -97,10 +97,11 @@ llm = ChatOpenAI(
         streaming=False,
         max_completion_tokens=20000,
         request_timeout=120,
+        seed=42
     )
 
 registered_tools = [
-    # read_atoms_object, 
+    read_atoms_object, 
     get_sites_from_atoms, 
     get_fragment, 
     get_ads_slab, 
@@ -138,12 +139,9 @@ def parse_args():
 
 def _prepare_prompt(smiles: str, slab_path: str, user_request: str) -> str:
     # Read the slab file content
-    with open(slab_path, 'r') as file:
-        slab_content = file.read()
-    
     # Replace placeholders in the prompt template
     prompt = prompt_codeact.replace("{{SMILES}}", smiles)
-    prompt = prompt.replace("{{SLAB_XYZ}}", slab_content)
+    prompt = prompt.replace("{{SLAB_XYZ}}", slab_path)
     prompt = prompt.replace("{{USER_REQUEST}}", user_request)
     
     return prompt

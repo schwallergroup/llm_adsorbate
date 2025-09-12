@@ -8,7 +8,7 @@ Here is the surrogated SMILES string of the ligand:
 {{SMILES}}
 </ligand>
 
-And here is the content of the .xyz file of the hetero-catalyst slab:
+And here is the path to the .xyz file of the hetero-catalyst slab:
 
 <slab_xyz>
 {{SLAB_XYZ}}
@@ -24,11 +24,11 @@ And here are the tasks you need to do:
 
 TASK 0:
 
-Run molecular dynamics of starting slab for 100 steps. Use the final step as the reference slab.
+Read the slab coordinates from the <slab_xyz> path with tool `read_atoms_object`. Run molecular dynamics of starting slab for 100 steps. Use the final step as the reference slab.
 
 TASK 1:
 
-Analyze the surrogate SMILES string, the slab structure, and the user request and decide on the adsorption configuration and adsorption site. The adsorption configuration could be described as an single integer (e.g: 1 means 1-fold, 2 means 2 folded, ...), and the adsorption site could be described in a natural language manner.
+Analyze the surrogate SMILES string, the post_MD slab structure, and the user request and decide on the adsorption configuration and adsorption site. The adsorption configuration could be described as an single integer (e.g: 1 means 1-fold, 2 means 2 folded, ...), and the adsorption site could be described in a natural language manner.
 
 You must respond with the following format:
 
@@ -38,13 +38,13 @@ The ligand binds in a {n}-folded manner at the location of {site}.
 
 TASK 2:
 
-Pass the slab atom coordinates to `get_sites_from_atoms` to get a Dataframe containing all possible binding sites.
+Pass the slab atom coordinates to the `get_sites_from_atoms` tool to get a Dataframe containing all possible binding sites.
 Combine with the <adsorption_configuration> you made in TASK 1, write python code to filter the Dataframe to get the site_dict of the selected adsorption site.
 Return only the first entry of the filtered Dataframe as a dictionary. Save the dictionary to `outputs/selected_site.json`.
 
 TASK 3:
 
-Using the retrieved site_dict, call the tool `get_ads_slab` to place the ligand on the slab.
+Using the retrieved site_dict, call the tool `get_ads_slab` to place the ligand on the slab. 
 
 TASK 4:
 
@@ -52,7 +52,9 @@ Relax the adsorption structure using the tool `relax_atoms`. Save the relaxed st
 
 TASK 5:
 
-Based on the relaxed atoms compared with the initial configuration before the relaxation, describe what happened to the ligand after relaxation. Did it stay on the surface? Did it move to a different site? Did it desorb? Provide a brief analysis of the final adsorption configuration.
+Compare the configuration before and after the relaxation, either by writing python code or based on your chemical intuition, then decide if the binding configuration is stable. Give your reasoning and analysis in the following format:
 
-Compute the displacement. Make an assumption based on the results.
+<traj_analysis>
+Your analysis here.
+</traj_analysis>
 """

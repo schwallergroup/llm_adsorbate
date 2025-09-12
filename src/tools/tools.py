@@ -14,7 +14,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 # mace calculator harcoded for the time being
 
 def read_atoms_object(path: str):
-    """reads a atomistic structure file from the system,
+    """Reads a atomistic structure file 
     Args:
         path: string - location on system
     returns:
@@ -23,7 +23,7 @@ def read_atoms_object(path: str):
     return ase.io.read(path)
 
 def get_sites_from_atoms(atoms: ase.Atoms): 
-    """
+    """Get all possible binding sites from atoms of a slab.
     Args:
         atoms: ase.Atoms object. Determines all surface sites. 
     Returns:
@@ -40,7 +40,7 @@ def get_sites_from_atoms(atoms: ase.Atoms):
     return Surface(atoms).site_df
 
 def get_fragment(SMILES: str, to_initialize=1, conformer_i=0):
-    """
+    """Generate a molecular fragment with conformations from a SMILES string.
     Args:
         SMILES: string of smiles that should be placed on surface sites.
         to_initialize: int = 1, if a SMILES is deamed to be conformationally complex. This number should be increased to deal with the increased complexity; in this case multiple fragment conformation should be tried.
@@ -51,7 +51,7 @@ def get_fragment(SMILES: str, to_initialize=1, conformer_i=0):
     return Fragment(SMILES, to_initialize=to_initialize).get_conformer(conformer_i)
 
 def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: dict, height: float = 1.5, n_rotation: float = 0.):
-    """
+    """Placing a fragment on a slab at a selected site defined by `site_dict`
     Args:
         slab_atoms: ase.Atoms, atoms of slab that should host the fragment
         fragment_atoms: ase.Atoms, molecular fragment obtained from SMILES
@@ -73,7 +73,7 @@ def get_ads_slab(slab_atoms: ase.Atoms, fragment_atoms: ase.Atoms, site_dict: di
     return ads_slab_atoms
 
 def relax_atoms(atoms: ase.Atoms, output_dir='./'):
-    """
+    """Atomic energy miniization.
     Args:
         atoms: ase.Atoms, atoms that need to be relaxed
         output_dir: str, where to write relax trajectory file
