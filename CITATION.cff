@@ -2,7 +2,9 @@ cff-version: 1.0.2
 message: "If you use this software, please cite it as below."
 title: "llm_adsorbate"
 authors:
-  - name: "XuanVuNguyen"
+  - name: "Edvin Fako"
+  - name: "Xuan Vu Nguyen"
+  - name: "Ryo Kuroki"
 version: 0.0.1
 doi:
 url: "https://github.com/schwallergroup/llm_adsorbate"
