@@ -129,3 +129,11 @@ def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300,
     write(os.path.join(output_dir, "md_traj.xyz"), MD_traj)
 
     return MD_traj
+
+def save_ase_atoms(atoms: ase.Atoms, filename):
+    """ this functions writes ase.atoms to xyz file
+    Args:
+        atoms: ase.Atoms tobject to be written
+        filename: string of where to write ase atoms. must end in '.xyz'
+    """
+    write(atoms, filename)
