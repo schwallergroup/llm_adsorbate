@@ -48,7 +48,7 @@ if openrouter_api_key:
 st.sidebar.header("Inputs")
 smiles_input = st.sidebar.text_input("SMILES String")
 xyz_file = st.sidebar.file_uploader("Slab XYZ file", type=['xyz'])
-user_query = st.sidebar.text_area("User Query", value="Please find a stable adsorption configuration for the adsorbate on the surface.")
+user_query = st.sidebar.text_area("User Query", value="")
 
 run_button = st.sidebar.button("Run Agent")
 

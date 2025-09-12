@@ -18,8 +18,8 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph_codeact import create_codeact
 
-import weave
-weave.init("liac/llm-hackathon")
+# import weave
+# weave.init("liac/llm-hackathon")
 
 from src.agent.prompts import prompt_codeact
 from src.tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms, md_run_atoms
@@ -80,7 +80,7 @@ def parse_args():
     parser.add_argument("--user_request", type=str, default="Find a stable adsorption configuration.", help="User's request.")
     return parser.parse_args()
 
-@weave.op()
+# @weave.op()
 def main_cli():
     args = parse_args()
     prompt = _prepare_prompt(args.smiles, args.slab_path, args.user_request)
