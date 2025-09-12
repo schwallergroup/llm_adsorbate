@@ -1,6 +1,7 @@
 import ase
 from ase.io import read, write
 from autoadsorbate import Surface, Fragment
+from ase.constraints import FixAtoms
 from autoadsorbate.Surf import attach_fragment
 from ase.optimize import BFGS
 from ase.io.trajectory import Trajectory
@@ -85,6 +86,9 @@ def relax_atoms(atoms: ase.Atoms, output_dir='./'):
 
     relaxed_atoms = atoms.copy()
     relaxed_atoms.calc = mace_calculator
+
+    relaxed_atoms.constraints = FixAtoms(indices=[atom.index for atom in relaxed_atoms if atom.position[2] < relaxed_atoms.cell[2][2] * .5])
+    
     dyn = BFGS(relaxed_atoms, trajectory=os.path.join(output_dir, "relax.traj"), logfile="relax.log")
     dyn.run(fmax=0.01)
 
@@ -104,8 +108,8 @@ def md_run_atoms(atoms: ase.Atoms, steps: int = 100, temperature_K: float = 300,
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     mace_calculator = mace_mp(model="medium", device=str(device), dispersion=False)
 
-    
     atoms.calc = mace_calculator
+    atoms.constraints = FixAtoms(indices=[atom.index for atom in atoms if atom.position[2] < atoms.cell[2][2] * .5])
 
     MaxwellBoltzmannDistribution(atoms, temperature_K=300)
     
