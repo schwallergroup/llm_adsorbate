@@ -13,7 +13,7 @@ import streamlit as st
 from src.agent.agent import get_agent_executor, _prepare_prompt
 
 st.set_page_config(page_title="LLM Agent Demo", layout="wide")
-st.title("Brosda")
+st.title("adsKRK")
 
 # --- エージェントの初期化 ---
 @st.cache_resource

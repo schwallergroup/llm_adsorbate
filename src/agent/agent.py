@@ -24,6 +24,13 @@ weave.init("liac/llm-hackathon")
 from src.agent.prompts import prompt_codeact
 from src.tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms, md_run_atoms
 
+<<<<<<< HEAD
+=======
+from .prompts import prompt_codeact
+from ..tools.tools import read_atoms_object, get_sites_from_atoms, get_fragment, get_ads_slab, relax_atoms, md_run_atoms, save_ase_atoms
+
+# Load environment variables from .env file
+>>>>>>> origin/dev_Vu
 load_dotenv()
 
 if not os.environ.get("OPENROUTER_API_KEY"):
@@ -52,6 +59,7 @@ def eval_code(code: str, context: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return output, context_after_exec
 
 llm = ChatOpenAI(
+<<<<<<< HEAD
     openai_api_base="https://openrouter.ai/api/v1",
     openai_api_key=os.getenv("OPENROUTER_API_KEY"),
     model="google/gemini-2.5-pro",
@@ -61,6 +69,25 @@ llm = ChatOpenAI(
 registered_tools = [
     read_atoms_object, get_sites_from_atoms, get_fragment,
     get_ads_slab, relax_atoms, md_run_atoms
+=======
+        openai_api_base="https://openrouter.ai/api/v1",
+        openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+        model="google/gemini-2.5-pro",
+        streaming=False,
+        max_completion_tokens=20000,
+        request_timeout=300,
+        seed=42
+    )
+
+registered_tools = [
+    read_atoms_object, 
+    save_ase_atoms,
+    get_sites_from_atoms, 
+    get_fragment, 
+    get_ads_slab, 
+    relax_atoms,
+    md_run_atoms
+>>>>>>> origin/dev_Vu
 ]
 
 def get_agent_executor():

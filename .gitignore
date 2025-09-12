@@ -900,3 +900,5 @@ FodyWeavers.xsd
 
 scratch/
 outputs/
+draft.ipynb
+uv.lock
