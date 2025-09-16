@@ -20,7 +20,7 @@ LLM hackathon - An LLM agent system for the autonomous exploration of stable abs
 
 ## Requirements
 
-This project uses OpenRouter to interact with various large language models. To use this application, you need to have an OpenRouter account and an API key.
+Currently, to use this application, you need to have an OpenRouter account and an API key.
 
 - [OpenRouter](https://openrouter.ai/)
 
