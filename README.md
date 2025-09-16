@@ -39,6 +39,14 @@ Therefore, to answer the user's question: no, the fragment does not stay covalen
 
 Which is quite impressive and might pique interest for future research about LLM reasoning for MD trajectory!
 
+## Requirements
+
+Currently, to use this application, you need to have an OpenRouter account and an API key.
+
+- [OpenRouter](https://openrouter.ai/)
+
+You will be asked to enter your API key when you run the application.
+
 ## 👩‍💻 Installation
 ```bash
 $ git clone https://github.com/schwallergroup/llm_adsorbate.git
