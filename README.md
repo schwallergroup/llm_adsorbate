@@ -19,7 +19,7 @@
 
 Welcome to the AdsKRK repository! This project is a prototype developed during the 2-day [LLM Hackathon for Application in Chemistry and Materials Science](https://llmhackathon.github.io/). 
 
-The goal of AdsKRK is to showcase how Large Language Models (LLMs) can autonomously explore the binding configurations of small ligands on hetero-catalytic surfaces. Starting from only a SMILES string and a surface structure (XYZ format), the agent can:
+The goal of AdsKRK is to showcase how Large Language Models (LLMs) can autonomously explore the binding configurations of adsorbates on hetero-catalytic surfaces. Starting from only a SMILES string and a surface structure (XYZ format), the agent can:
 * generate binding configurations,
 * run structure relaxations,
 * analyze the results, and
