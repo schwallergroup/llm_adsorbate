@@ -18,6 +18,14 @@
 
 LLM hackathon - An LLM agent system for the autonomous exploration of stable absorbate structures on catalytic surfaces.
 
+## Requirements
+
+This project uses OpenRouter to interact with various large language models. To use this application, you need to have an OpenRouter account and an API key.
+
+- [OpenRouter](https://openrouter.ai/)
+
+You will be asked to enter your API key when you run the application.
+
 ## 👩‍💻 Installation
 ```bash
 $ git clone https://github.com/schwallergroup/llm_adsorbate.git
